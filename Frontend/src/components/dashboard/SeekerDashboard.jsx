@@ -52,6 +52,15 @@ const SeekerDashboard = () => {
           >
             Track Submissions
           </NavLink>
+          <NavLink
+            to="/seeker-dashboard/profile"
+            style={({ isActive }) => ({
+              ...styles.navLink,
+              backgroundColor: isActive ? "#6c5ce7" : "#007BFF",
+            })}
+          >
+            Profile
+          </NavLink>
           <button onClick={handleLogout} style={styles.logoutButton}>
             Logout
           </button>

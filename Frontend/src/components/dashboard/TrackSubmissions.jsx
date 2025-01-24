@@ -31,30 +31,28 @@ const TrackSubmissions = () => {
       <h2>Track Submissions</h2>
       {submissions.length > 0 ? (
         submissions.map((submission, index) => {
-          const { id, sponsorshipTitle, status, sponsorDetails, messageToSeeker, createdAt } = submission;
+          const { id, sponsorshipTitle, description, deadline, status, messageToSeeker, createdAt, sponsorDetails } = submission;
 
           return (
             <div key={id || index} style={styles.card}>
               <h3>{sponsorshipTitle}</h3>
-              <p>
-                <strong>Status:</strong>{' '}
-                <span style={statusStyles[status]}>{status}</span>
-              </p>
-              <p>
-                <strong>Submitted At:</strong>{' '}
-                {new Date(createdAt).toLocaleString()}
-              </p>
-              <p>
-                <strong>Message from Sponsor:</strong>{' '}
-                {messageToSeeker || 'No message provided.'}
-              </p>
+              <p><strong>Description:</strong> {description}</p>
+              <p><strong>Deadline:</strong> {deadline}</p>
+              <p><strong>Status:</strong> <span style={statusStyles[status]}>{status}</span></p>
+              <p><strong>Submitted At:</strong> {new Date(createdAt).toLocaleString()}</p>
+              <p><strong>Message from Sponsor:</strong> {messageToSeeker || 'No message provided.'}</p>
+              
+              {/* Display sponsor details if status is 'Accepted' and sponsorDetails exist */}
               {status === 'Accepted' && sponsorDetails && (
-                <>
-                  <h4>Sponsor Details:</h4>
-                  <p><strong>Name:</strong> {sponsorDetails.name}</p>
-                  <p><strong>Email:</strong> {sponsorDetails.email}</p>
-                  <p><strong>Contact Number:</strong> {sponsorDetails.contactNumber}</p>
-                </>
+                <div style={styles.sponsorDetails}>
+                  <h4>Sponsor Details</h4>
+                  {sponsorDetails.name && <p><strong>Name:</strong> {sponsorDetails.name}</p>}
+                  {sponsorDetails.email && <p><strong>Email:</strong> {sponsorDetails.email}</p>}
+                  {sponsorDetails.contactNumber && <p><strong>Contact Number:</strong> {sponsorDetails.contactNumber}</p>}
+                  {!sponsorDetails.name && !sponsorDetails.email && !sponsorDetails.contactNumber && (
+                    <p>No sponsor details available.</p>
+                  )}
+                </div>
               )}
             </div>
           );
@@ -74,6 +72,12 @@ const styles = {
     borderRadius: '8px',
     backgroundColor: '#f9f9f9',
     marginBottom: '10px',
+  },
+  sponsorDetails: {
+    marginTop: '15px',
+    padding: '10px',
+    backgroundColor: '#e8f5e9',
+    borderRadius: '8px',
   },
 };
 

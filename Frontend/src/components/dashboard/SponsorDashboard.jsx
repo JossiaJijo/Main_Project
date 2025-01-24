@@ -35,13 +35,16 @@ const SponsorDashboard = () => {
           <Link to="/sponsor-dashboard/track-proposals" style={styles.link}>
             Track Proposals
           </Link>
+          <Link to="/sponsor-dashboard/profile" style={styles.link}>
+            Profile
+          </Link>
           <button onClick={handleLogout} style={styles.logoutButton}>
             Logout
           </button>
         </nav>
       </header>
       <main style={styles.mainContent}>
-        <Outlet />
+        <Outlet /> {/* Render the child route components here */}
       </main>
       <Footer style={styles.footer} />
     </div>

@@ -14,18 +14,19 @@ function ForgotPassword() {
       setError('New password and confirm password do not match');
       return;
     }
-
+  
     try {
       const response = await axios.post('http://localhost:5000/api/auth/forgot-password', {
         username,
-        newPassword,
-        confirmPassword,
+        newPassword, // Only send necessary fields
       });
       setMessage(response.data.message);
+      setError('');
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');
     }
   };
+  
 
   return (
     <>

@@ -48,22 +48,21 @@ router.get('/seeker-submissions', protect, async (req, res) => {
     const proposals = await Proposal.find({ seekerId })
       .populate({
         path: 'sponsorshipId',
-        select: 'title sponsorId',
+        select: 'title description deadline sponsorId',
         populate: {
           path: 'sponsorId',
           select: 'firstName lastName email contactNumber',
         },
       });
 
-    if (!proposals.length) {
-      return res.status(404).json({ message: 'No submissions found.' });
-    }
-
     const submissions = proposals.map((proposal) => ({
       id: proposal._id,
       sponsorshipTitle: proposal.sponsorshipId?.title || 'Unknown Sponsorship',
+      description: proposal.sponsorshipId?.description || 'No description provided.',
+      deadline: proposal.sponsorshipId?.deadline ? new Date(proposal.sponsorshipId.deadline).toLocaleDateString() : 'No deadline provided.',
       status: proposal.status,
       messageToSeeker: proposal.messageToSeeker || 'No message from sponsor.',
+      createdAt: proposal.createdAt,
       sponsorDetails:
         proposal.status === 'Accepted' && proposal.sponsorshipId?.sponsorId
           ? {
@@ -72,7 +71,6 @@ router.get('/seeker-submissions', protect, async (req, res) => {
               contactNumber: proposal.sponsorshipId.sponsorId.contactNumber,
             }
           : null,
-      createdAt: proposal.createdAt,
     }));
 
     res.status(200).json(submissions);
@@ -81,6 +79,8 @@ router.get('/seeker-submissions', protect, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch submissions.' });
   }
 });
+
+
 
 // Fetch messages for a seeker
 router.get('/seeker-messages/:seekerId', protect, async (req, res) => {

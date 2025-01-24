@@ -25,7 +25,7 @@ const TrackProposals = () => {
       await acceptProposal(proposalId);
       setProposals((prev) =>
         prev.map((proposal) =>
-          proposal._id === proposalId ? { ...proposal, status: 'Accepted' } : proposal
+          proposal.id === proposalId ? { ...proposal, status: 'Accepted' } : proposal
         )
       );
       setSuccess('Proposal accepted successfully and seeker notified.');
@@ -42,7 +42,7 @@ const TrackProposals = () => {
       await dismissProposal(proposalId);
       setProposals((prev) =>
         prev.map((proposal) =>
-          proposal._id === proposalId ? { ...proposal, status: 'Dismissed' } : proposal
+          proposal.id === proposalId ? { ...proposal, status: 'Dismissed' } : proposal
         )
       );
       setSuccess('Proposal dismissed successfully and seeker notified.');
@@ -60,21 +60,23 @@ const TrackProposals = () => {
       {success && <p style={styles.success}>{success}</p>}
       {proposals.length > 0 ? (
         proposals.map((proposal) => (
-          <div key={proposal._id} style={styles.card}>
-            <h3>{proposal.sponsorshipId?.title}</h3>
-            <p>{proposal.message}</p>
-            <p><strong>Status:</strong> {proposal.status || 'Pending'}</p>
+          <div key={proposal.id} style={styles.card}>
+            <h3>{proposal.sponsorshipTitle}</h3>
+            <p><strong>Description:</strong> {proposal.description}</p>
+            <p><strong>Deadline:</strong> {proposal.deadline}</p>
+            <p><strong>Message:</strong> {proposal.message}</p>
+            <p><strong>Status:</strong> {proposal.status}</p>
             <p><strong>Submitted On:</strong> {new Date(proposal.createdAt).toLocaleString()}</p>
             <div style={styles.buttonContainer}>
               <button
-                onClick={() => handleAccept(proposal._id)}
+                onClick={() => handleAccept(proposal.id)}
                 style={styles.acceptButton}
                 disabled={proposal.status === 'Accepted'}
               >
                 Accept
               </button>
               <button
-                onClick={() => handleDismiss(proposal._id)}
+                onClick={() => handleDismiss(proposal.id)}
                 style={styles.dismissButton}
                 disabled={proposal.status === 'Dismissed'}
               >

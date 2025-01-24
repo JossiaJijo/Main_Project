@@ -22,15 +22,32 @@ router.get('/my-proposals', protect, async (req, res) => {
       .populate({
         path: 'sponsorshipId',
         match: { sponsorId: req.user.id },
+        select: 'title description deadline',
       })
-      .exec();
-    const filteredProposals = proposals.filter(p => p.sponsorshipId !== null);
-    res.status(200).json(filteredProposals);
+      .populate('seekerId', 'username email'); // Include seeker details
+
+    const filteredProposals = proposals.filter((p) => p.sponsorshipId !== null);
+
+    const formattedProposals = filteredProposals.map((proposal) => ({
+      id: proposal._id,
+      sponsorshipTitle: proposal.sponsorshipId?.title || 'Unknown Sponsorship',
+      description: proposal.sponsorshipId?.description || 'No description provided.',
+      deadline: proposal.sponsorshipId?.deadline
+        ? new Date(proposal.sponsorshipId.deadline).toLocaleDateString()
+        : 'No deadline provided.',
+      seekerName: proposal.seekerId?.username || 'Unknown Seeker',
+      status: proposal.status,
+      message: proposal.message,
+      createdAt: proposal.createdAt,
+    }));
+
+    res.status(200).json(formattedProposals);
   } catch (error) {
     console.error('Error fetching proposals:', error);
     res.status(500).json({ error: 'Failed to fetch proposals.' });
   }
 });
+
 
 // Add sponsorship specific to a sponsor
 router.post('/', protect, async (req, res) => {
