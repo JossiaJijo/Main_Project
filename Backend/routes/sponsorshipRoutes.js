@@ -117,18 +117,32 @@ router.delete('/:id', protect, async (req, res) => {
   }
 });
 // Fetch all sponsorship opportunities
-router.get('/all', async (req, res) => {
+
+router.get('/all', protect, async (req, res) => {
   try {
-    const sponsorships = await Sponsorship.find(); // Fetch all sponsorships
-    if (!sponsorships.length) {
-      return res.status(404).json({ message: 'No sponsorship opportunities found.' });
-    }
-    res.status(200).json(sponsorships); // Return sponsorships as an array
+    const seekerId = req.user.id;
+
+    // Fetch proposals submitted by the seeker
+    const submittedProposals = await Proposal.find({ seekerId }).select('sponsorshipId');
+    const excludedSponsorshipIds = submittedProposals.map((proposal) => proposal.sponsorshipId.toString());
+
+    // Fetch all sponsorships excluding already submitted ones
+    const sponsorships = await Sponsorship.find({
+      _id: { $nin: excludedSponsorshipIds }, // Exclude submitted sponsorships
+    });
+
+    res.status(200).json({
+      sponsorships,
+      message: sponsorships.length ? null : 'No sponsorship opportunities available.',
+    });
   } catch (error) {
-    console.error('Error fetching sponsorships:', error);
+    console.error('Error fetching sponsorships:', error.message);
     res.status(500).json({ error: 'Failed to fetch sponsorship opportunities.' });
   }
 });
+
+
+
 
 
 // Submit a proposal for a sponsorship

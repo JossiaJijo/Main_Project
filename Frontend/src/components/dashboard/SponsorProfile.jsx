@@ -58,7 +58,7 @@ const SponsorProfile = () => {
 
   return (
     <div style={styles.container}>
-      <h2>Sponsor Profile</h2>
+      <h2 style={styles.heading}>Sponsor Profile</h2>
       {isEditing ? (
         <div style={styles.card}>
           <label>
@@ -129,18 +129,62 @@ const SponsorProfile = () => {
 };
 
 const styles = {
-  container: { padding: '20px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' },
-  card: {
-    padding: '15px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    backgroundColor: '#f9f9f9',
-    textAlign: 'left',
+  container: {
+    padding: '20px',
+    minHeight: '100vh',
+    maxWidth: '100vw',
+    margin: '0 auto',
+    textAlign: 'center',
+    backgroundImage: "url('/Profile_background.jpeg')", // Replace with the actual image in your public folder
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundColor: '#00000088', // Fallback color
   },
-  input: { width: '100%', margin: '10px 0', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' },
-  editButton: { padding: '10px 15px', backgroundColor: '#6c5ce7', color: '#fff', border: 'none', borderRadius: '5px' },
-  saveButton: { padding: '10px 15px', backgroundColor: '#4caf50', color: '#fff', border: 'none', borderRadius: '5px', marginRight: '10px' },
-  cancelButton: { padding: '10px 15px', backgroundColor: '#d9534f', color: '#fff', border: 'none', borderRadius: '5px' },
+  card: {
+    padding: '20px',
+    border: '1px solid #ddd',
+    borderRadius: '10px',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent for readability
+    textAlign: 'left',
+    maxWidth: '500px',
+    margin: '50px auto',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  },
+  heading: {
+    color: '#2d3e50',
+    fontWeight: 'bold',
+    fontSize: '28px',
+    marginBottom: '20px',
+  },
+  input: {
+    width: '100%',
+    margin: '10px 0',
+    padding: '8px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+  },
+  editButton: {
+    padding: '10px 15px',
+    backgroundColor: '#6c5ce7',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+  },
+  saveButton: {
+    padding: '10px 15px',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    marginRight: '10px',
+  },
+  cancelButton: {
+    padding: '10px 15px',
+    backgroundColor: '#d9534f',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+  },
 };
 
 export default SponsorProfile;

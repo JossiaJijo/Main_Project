@@ -49,9 +49,9 @@ function Login() {
           />
           <button onClick={handleLogin} style={styles.button}>Login</button>
           {error && <p style={styles.error}>{error}</p>}
-          <p>
+          {/*<p>
             <Link to="/forgot-password" style={styles.link}>Forgot Password?</Link>
-          </p>
+          </p>*/}
         </div>
         <div style={styles.linkContainer}>
           <p>

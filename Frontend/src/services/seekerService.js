@@ -1,16 +1,19 @@
 import apiClient from './apiClient';
 import axios from 'axios'; // Ensure axios is imported for consistency
 
-// Fetch all sponsorship opportunities
+// Fetch sponsorships excluding submitted ones
+
+
 export const getAllSponsorships = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/api/sponsorships/all');
-    return response.data; // Return sponsorships array
+    const response = await apiClient.get('/sponsorships/all'); // Ensure the endpoint matches
+    return response.data.sponsorships; // Return sponsorships from the response
   } catch (error) {
-    console.error('Error fetching sponsorships:', error);
+    console.error('Error fetching sponsorships:', error.response?.data || error.message);
     throw error;
   }
 };
+
 
 // Submit a proposal for a sponsorship
 export const submitProposal = async (data) => {

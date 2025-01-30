@@ -57,8 +57,15 @@ const SeekerProfile = () => {
   }
 
   return (
-    <div style={styles.container}>
-      <h2>Seeker Profile</h2>
+    <div
+      style={{
+        ...styles.container,
+        backgroundImage: "url('/Profile_background.jpeg')", // Replace with the actual image name in the public folder
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <h2 style={styles.heading}>Seeker Profile</h2>
       {isEditing ? (
         <div style={styles.card}>
           <label>
@@ -129,18 +136,65 @@ const SeekerProfile = () => {
 };
 
 const styles = {
-  container: { padding: '20px', maxWidth: '600px', margin: '0 auto', textAlign: 'center' },
+  container: {
+    padding: '20px',
+    minHeight: '100vh',
+    maxWidth: '100vw',
+    margin: '0 auto',
+    textAlign: 'center',
+    backgroundImage: "url('/profile_background.jpeg')", // Replace with the actual image name
+    backgroundSize: '150% auto',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    backgroundColor: '#00000088', // Fallback color for better readability
+  },
   card: {
     padding: '15px',
     border: '1px solid #ddd',
     borderRadius: '8px',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent background for better readability
     textAlign: 'left',
+    maxWidth: '600px',
+    margin: '0 auto',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
   },
-  input: { width: '100%', margin: '10px 0', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' },
-  editButton: { padding: '10px 15px', backgroundColor: '#6c5ce7', color: '#fff', border: 'none', borderRadius: '5px' },
-  saveButton: { padding: '10px 15px', backgroundColor: '#4caf50', color: '#fff', border: 'none', borderRadius: '5px', marginRight: '10px' },
-  cancelButton: { padding: '10px 15px', backgroundColor: '#d9534f', color: '#fff', border: 'none', borderRadius: '5px' },
+  heading: {
+    color: '#2d3e50', // Dark navy or charcoal gray
+    fontWeight: 'bold',
+    fontSize: '28px',
+    marginBottom: '20px',
+  },
+  input: {
+    width: '100%',
+    margin: '10px 0',
+    padding: '8px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+  },
+  editButton: {
+    padding: '10px 15px',
+    backgroundColor: '#6c5ce7',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+  },
+  saveButton: {
+    padding: '10px 15px',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    marginRight: '10px',
+  },
+  cancelButton: {
+    padding: '10px 15px',
+    backgroundColor: '#d9534f',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+  },
 };
+
+
 
 export default SeekerProfile;
