@@ -36,21 +36,22 @@ const BrowseOpportunities = () => {
       setError('Proposal message cannot be empty.');
       return;
     }
-
+  
     try {
       await submitProposal({ sponsorshipId, message: message[sponsorshipId] });
       setSuccess('Proposal submitted successfully!');
       setMessage((prev) => ({ ...prev, [sponsorshipId]: '' }));
-
-      // Refresh the opportunities list
-      const updatedSponsorships = await getAllSponsorships();
-      setSponsorships(updatedSponsorships.sponsorships || []);
+  
+      // Remove the submitted sponsorship from the list instead of refetching
+      setSponsorships((prevSponsorships) =>
+        prevSponsorships.filter((sponsorship) => sponsorship._id !== sponsorshipId)
+      );
     } catch (err) {
       console.error('Error submitting proposal:', err.message);
       setError('Failed to submit the proposal.');
     }
   };
-
+  
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h2>Browse Sponsorship Opportunities</h2>
