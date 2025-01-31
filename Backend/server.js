@@ -4,7 +4,8 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const sponsorshipRoutes = require('./routes/sponsorshipRoutes');
 const proposalRoutes = require('./routes/proposalRoutes'); // Import proposal routes
-
+const cron = require('node-cron');
+const { exec } = require('child_process');
 // Connect to the database
 connectDB();
 
@@ -24,7 +25,17 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
-
+// Run expireSponsorships.js every day at midnight
+cron.schedule('0 0 * * *', () => {
+  console.log('🔄 Running scheduled job: Expiring Sponsorships');
+  exec('node Backend/utils/expireSponsorships.js', (err, stdout, stderr) => {
+    if (err) {
+      console.error('❌ Error running expiration job:', err);
+      return;
+    }
+    console.log(stdout);
+  });
+});
 // Fallback route for unmatched paths
 app.use((req, res) => {
   res.status(404).json({ error: 'API route not found.' });

@@ -13,11 +13,14 @@ const BrowseOpportunities = () => {
       setLoading(true);
       try {
         const data = await getAllSponsorships();
+
         if (data.length > 0) {
-          setSponsorships(data);
+          // Filter only Active sponsorships
+          const activeSponsorships = data.filter(sponsorship => sponsorship.status === 'Active');
+          setSponsorships(activeSponsorships);
           setError('');
         } else {
-          setError('No sponsorship opportunities available.');
+          setError('No active sponsorship opportunities available.');
           setSponsorships([]);
         }
       } catch (err) {
@@ -29,19 +32,18 @@ const BrowseOpportunities = () => {
     };
     fetchSponsorships();
   }, []);
-  
 
   const handleProposalSubmit = async (sponsorshipId) => {
     if (!message[sponsorshipId] || !message[sponsorshipId].trim()) {
       setError('Proposal message cannot be empty.');
       return;
     }
-  
+
     try {
       await submitProposal({ sponsorshipId, message: message[sponsorshipId] });
       setSuccess('Proposal submitted successfully!');
       setMessage((prev) => ({ ...prev, [sponsorshipId]: '' }));
-  
+
       // Remove the submitted sponsorship from the list instead of refetching
       setSponsorships((prevSponsorships) =>
         prevSponsorships.filter((sponsorship) => sponsorship._id !== sponsorshipId)
@@ -51,24 +53,30 @@ const BrowseOpportunities = () => {
       setError('Failed to submit the proposal.');
     }
   };
-  
+
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+    <div style={styles.container}>
       <h2>Browse Sponsorship Opportunities</h2>
       {loading && <p>Loading opportunities...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <p style={styles.error}>{error}</p>}
+      {success && <p style={styles.success}>{success}</p>}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <div style={styles.list}>
         {!loading && sponsorships.length === 0 ? (
-          <p>No sponsorship opportunities available at the moment.</p>
+          <p>No active sponsorship opportunities available at the moment.</p>
         ) : (
           sponsorships.map((sponsorship) => (
-            <div key={sponsorship._id} style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '8px' }}>
+            <div key={sponsorship._id} style={styles.card}>
               <h3>{sponsorship.title}</h3>
               <p>{sponsorship.description}</p>
               <p>
                 <strong>Deadline:</strong> {new Date(sponsorship.deadline).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Status:</strong>{' '}
+                <span style={getStatusStyle(sponsorship.status)}>
+                  {sponsorship.status}
+                </span>
               </p>
               <textarea
                 placeholder="Enter your proposal message"
@@ -76,18 +84,11 @@ const BrowseOpportunities = () => {
                 onChange={(e) =>
                   setMessage((prev) => ({ ...prev, [sponsorship._id]: e.target.value }))
                 }
-                style={{ width: '100%', marginTop: '10px', padding: '10px', borderRadius: '5px' }}
+                style={styles.textarea}
               />
               <button
                 onClick={() => handleProposalSubmit(sponsorship._id)}
-                style={{
-                  marginTop: '10px',
-                  padding: '10px',
-                  backgroundColor: '#4caf50',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '5px',
-                }}
+                style={styles.button}
               >
                 Submit Proposal
               </button>
@@ -99,7 +100,19 @@ const BrowseOpportunities = () => {
   );
 };
 
-
+// Function to style sponsorship status
+const getStatusStyle = (status) => {
+  switch (status) {
+    case 'Active':
+      return { color: 'green', fontWeight: 'bold' };
+    case 'Closed':
+      return { color: 'orange', fontWeight: 'bold' };
+    case 'Expired':
+      return { color: 'red', fontWeight: 'bold' };
+    default:
+      return { color: 'black' };
+  }
+};
 
 const styles = {
   container: { padding: '20px', maxWidth: '800px', margin: '0 auto' },

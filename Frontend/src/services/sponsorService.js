@@ -34,3 +34,7 @@ export const acceptProposal = async (proposalId) => {
 export const dismissProposal = async (proposalId) => {
   return await apiClient.put(`/proposals/dismiss/${proposalId}`);
 };
+// Close a sponsorship
+export const closeSponsorship = async (sponsorshipId) => {
+  return await apiClient.put(`/sponsorships/close/${sponsorshipId}`);
+};

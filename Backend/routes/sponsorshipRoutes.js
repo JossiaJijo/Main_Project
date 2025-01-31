@@ -98,7 +98,7 @@ router.put('/:id', protect, async (req, res) => {
   }
 });
 
-// Delete sponsorship
+// Delete sponsorship and related proposals
 router.delete('/:id', protect, async (req, res) => {
   try {
     const sponsorship = await Sponsorship.findOneAndDelete({
@@ -110,16 +110,29 @@ router.delete('/:id', protect, async (req, res) => {
       return res.status(404).json({ error: 'Sponsorship not found.' });
     }
 
-    res.status(200).json({ message: 'Sponsorship deleted successfully.' });
+    // Delete all proposals associated with this sponsorship
+    await Proposal.deleteMany({ sponsorshipId: req.params.id });
+
+    res.status(200).json({ message: 'Sponsorship and related proposals deleted successfully.' });
   } catch (error) {
     console.error('Error deleting sponsorship:', error);
     res.status(500).json({ error: 'Failed to delete sponsorship.' });
   }
 });
+
 // Fetch all sponsorship opportunities
 
 router.get('/all', protect, async (req, res) => {
   try {
+
+    // Get current date
+    const currentDate = new Date();
+
+    // Update expired sponsorships
+    await Sponsorship.updateMany(
+      { deadline: { $lt: currentDate }, status: 'Active' },
+      { $set: { status: 'Expired' } }
+    );
     const seekerId = req.user.id;
 
     // Fetch proposals submitted by the seeker
@@ -200,6 +213,28 @@ router.get('/my-proposals', protect, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch proposals.' });
   }
 });
+
+//Allow sponsors to close a sponsorship manually
+router.put('/close/:id', protect, async (req, res) => {
+  try {
+    const sponsorship = await Sponsorship.findOneAndUpdate(
+      { _id: req.params.id, sponsorId: req.user.id, status: 'Active' },
+      { $set: { status: 'Closed' } },
+      { new: true }
+    );
+
+    if (!sponsorship) {
+      return res.status(404).json({ error: 'Sponsorship not found or already closed.' });
+    }
+
+    res.status(200).json({ message: 'Sponsorship closed successfully.', sponsorship });
+  } catch (error) {
+    console.error('Error closing sponsorship:', error);
+    res.status(500).json({ error: 'Failed to close sponsorship.' });
+  }
+});
+
+
 
 
 module.exports = router;

@@ -116,6 +116,7 @@ const SponsorProfile = () => {
         </div>
       ) : (
         <div style={styles.card}>
+          <p><strong>Username:</strong> {profile.username}</p>
           <p><strong>First Name:</strong> {profile.firstName}</p>
           <p><strong>Last Name:</strong> {profile.lastName}</p>
           <p><strong>Email:</strong> {profile.email}</p>
