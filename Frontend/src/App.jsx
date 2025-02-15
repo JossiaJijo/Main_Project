@@ -5,7 +5,12 @@ import AboutUs from "./components/home/AboutUs";
 import ContactUs from "./components/home/ContactUs";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
+import AdminDashboard from "./components/dashboard/AdminDashboard";
+import HomePage from './components/dashboard/HomePage';
+import SponsorDetails from './components/dashboard/SponsorDetails';
+import SeekerDetails from './components/dashboard/SeekerDetails';
 import ForgotPassword from "./components/auth/ForgotPassword";
+
 
 // Sponsor Dashboard Components
 import SponsorDashboard from "./components/dashboard/SponsorDashboard";
@@ -32,6 +37,11 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/admin-home" element={<AdminDashboard />} />
+        <Route path="/sponsor-details" element={<SponsorDetails />} />
+        <Route path="/seeker-details" element={<SeekerDetails />} />
 
       {/* Nested Routes for Sponsor Dashboard */}
       <Route path="/sponsor-dashboard" element={<SponsorDashboard />}>

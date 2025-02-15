@@ -14,7 +14,6 @@ router.get('/my-sponsorships', protect, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch sponsorships.' });
   }
 });
-
 // Fetch proposals for sponsor's sponsorships
 router.get('/my-proposals', protect, async (req, res) => {
   try {
@@ -47,8 +46,6 @@ router.get('/my-proposals', protect, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch proposals.' });
   }
 });
-
-
 // Add sponsorship specific to a sponsor
 router.post('/', protect, async (req, res) => {
   const { title, description, deadline } = req.body;
@@ -98,22 +95,21 @@ router.put('/:id', protect, async (req, res) => {
   }
 });
 
-// Delete sponsorship and related proposals
+// Modify sponsorship deletion logic to prevent deletion if proposals exist
 router.delete('/:id', protect, async (req, res) => {
   try {
-    const sponsorship = await Sponsorship.findOneAndDelete({
-      _id: req.params.id,
-      sponsorId: req.user.id,
-    });
-
+    const sponsorship = await Sponsorship.findOne({ _id: req.params.id, sponsorId: req.user.id });
     if (!sponsorship) {
       return res.status(404).json({ error: 'Sponsorship not found.' });
     }
 
-    // Delete all proposals associated with this sponsorship
-    await Proposal.deleteMany({ sponsorshipId: req.params.id });
+    const existingProposals = await Proposal.findOne({ sponsorshipId: sponsorship._id });
+    if (existingProposals) {
+      return res.status(400).json({ error: 'Cannot delete sponsorship with existing proposals. Consider closing it instead.' });
+    }
 
-    res.status(200).json({ message: 'Sponsorship and related proposals deleted successfully.' });
+    await Sponsorship.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Sponsorship deleted successfully.' });
   } catch (error) {
     console.error('Error deleting sponsorship:', error);
     res.status(500).json({ error: 'Failed to delete sponsorship.' });
@@ -153,11 +149,6 @@ router.get('/all', protect, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch sponsorship opportunities.' });
   }
 });
-
-
-
-
-
 // Submit a proposal for a sponsorship
 router.post('/submit-proposal', protect, async (req, res) => {
   const { sponsorshipId, message } = req.body;
@@ -233,8 +224,4 @@ router.put('/close/:id', protect, async (req, res) => {
     res.status(500).json({ error: 'Failed to close sponsorship.' });
   }
 });
-
-
-
-
 module.exports = router;

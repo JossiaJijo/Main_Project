@@ -21,7 +21,13 @@ function Login() {
       localStorage.setItem('userId', user.id); // Store user ID
       localStorage.setItem('role', user.role);
 
-      navigate(user.role === 'seeker' ? '/seeker-dashboard' : '/sponsor-dashboard');
+      if (user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (user.role === 'seeker') {
+        navigate('/seeker-dashboard');
+      } else {
+        navigate('/sponsor-dashboard');
+      }
     } catch (err) {
       setError('Invalid username or password');
     }
@@ -49,9 +55,6 @@ function Login() {
           />
           <button onClick={handleLogin} style={styles.button}>Login</button>
           {error && <p style={styles.error}>{error}</p>}
-          {/*<p>
-            <Link to="/forgot-password" style={styles.link}>Forgot Password?</Link>
-          </p>*/}
         </div>
         <div style={styles.linkContainer}>
           <p>
@@ -125,4 +128,4 @@ const styles = {
   },
 };
 
-export default Login;  
+export default Login;

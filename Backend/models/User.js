@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema(
     contactNumber: { type: String },
     location: { type: String },
     role: { type: String, enum: ['sponsor', 'seeker'], required: true, default: 'seeker' },
+    
   },
   { timestamps: true } // Automatically adds `createdAt` and `updatedAt`
 );

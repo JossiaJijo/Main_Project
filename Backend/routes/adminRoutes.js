@@ -1,44 +1,36 @@
 const express = require('express');
-const { protect, adminAuth } = require('../middleware/authMiddleware');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 const User = require('../models/User');
 const Sponsorship = require('../models/Sponsorship');
 
 const router = express.Router();
 
-// Get all users
-router.get('/users', protect, adminAuth, async (req, res) => {
-  const users = await User.find().select('-password');
-  res.json(users);
+// Middleware to check admin role
+const checkAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied. Admins only.' });
+  }
+  next();
+};
+
+// Fetch all users (admin only)
+router.get('/users', protect, checkAdmin, async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
 });
 
-// Get statistics
-router.get('/stats', protect, adminAuth, async (req, res) => {
-  const totalUsers = await User.countDocuments();
-  const totalSponsorships = await Sponsorship.countDocuments();
-  const totalProposals = await Proposal.countDocuments();
-  res.json({ totalUsers, totalSponsorships, totalProposals });
-});
-
-// Ban/unban user
-router.put('/users/ban/:id', protect, adminAuth, async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) return res.status(404).json({ message: 'User not found' });
-  
-  user.isBanned = !user.isBanned;
-  await user.save();
-  res.json({ message: `User ${user.isBanned ? 'banned' : 'unbanned'}.` });
-});
-
-// Delete user
-router.delete('/users/:id', protect, adminAuth, async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.json({ message: 'User deleted successfully.' });
-});
-
-// Delete sponsorship
-router.delete('/sponsorships/:id', protect, adminAuth, async (req, res) => {
-  await Sponsorship.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Sponsorship deleted successfully.' });
+// Fetch all sponsorships (admin only)
+router.get('/sponsorships', protect, checkAdmin, async (req, res) => {
+  try {
+    const sponsorships = await Sponsorship.find();
+    res.status(200).json(sponsorships);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch sponsorships' });
+  }
 });
 
 module.exports = router;
